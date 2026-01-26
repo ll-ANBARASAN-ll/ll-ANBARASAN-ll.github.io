@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anbarasan Henry Uthayachandran - Portfolio GEII</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',   /* Bleu électrique */
+                        accent: '#10b981',    /* Vert */
+                        dark: '#0a0a0a',      /* Fond principal */
+                        card: '#18181b',      /* Fond des cartes */
+                        border: '#27272a'     /* Bordures */
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { 
+            background: #3b82f6; 
+            border-radius: 5px; 
+            border: 2px solid #0a0a0a;
+        }
+        .glass-nav { 
+            background: rgba(10, 10, 10, 0.85); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tech-badge { 
+            @apply px-3 py-1.5 bg-zinc-800 rounded-md text-xs font-mono text-blue-400 border border-zinc-700 transition-colors hover:bg-zinc-700 hover:border-blue-500/50; 
+        }
+        
+        /* Modal Styles */
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease-out;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2000; 
+        }
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #3b82f6, #10b981);
+        }
+        
+        .section-title {
+            @apply text-3xl md:text-4xl font-bold text-white mb-12 text-center;
+        }
+        
+        /* Image Hover Effect in Modals */
+        .modal img {
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+        .modal img:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-300 font-sans antialiased selection:bg-primary selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="p-2 bg-primary/10 rounded-lg text-primary group-hover:bg-primary/20 transition-colors">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white group-hover:text-primary transition-colors">
+                        Henry<span class="text-primary">.dev</span>
+                    </span>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-8">
+                        <a href="#accueil" class="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Accueil</a>
+                        <a href="#about" class="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Profil</a>
+                        <a href="#competences" class="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Compétences</a>
+                        <a href="#projets" class="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Projets</a>
+                        <a href="#parcours" class="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Parcours</a>
+                        <a href="#contact" class="bg-primary text-white px-5 py-2.5 rounded-full font-semibold hover:bg-blue-600 transition-all duration-300 shadow-lg shadow-blue-900/20 hover:shadow-blue-900/40 transform hover:-translate-y-0.5">
+                            Me contacter
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-primary focus:outline-none p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-card border-b border-zinc-800" id="mobile-menu">
+            <div class="px-4 pt-4 pb-6 space-y-2">
+                <a href="#accueil" class="block hover:bg-zinc-800 px-3 py-2 rounded-lg text-base font-medium text-gray-200 transition">Accueil</a>
+                <a href="#about" class="block hover:bg-zinc-800 px-4 py-3 rounded-lg text-base font-medium text-gray-200 transition">Profil</a>
+                <a href="#competences" class="block hover:bg-zinc-800 px-4 py-3 rounded-lg text-base font-medium text-gray-200 transition">Compétences</a>
+                <a href="#projets" class="block hover:bg-zinc-800 px-4 py-3 rounded-lg text-base font-medium text-gray-200 transition">Projets</a>
+                <a href="#contact" class="block text-primary hover:bg-zinc-800 px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="accueil" class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden bg-black">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 z-0 bg-[linear-gradient(to_right,#4f4f4f12_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f12_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/20 border border-blue-800/50 text-sm text-blue-400 mb-8 animate-fade-in-up shadow-sm" style="animation-delay: 0.1s;">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Disponible pour opportunités
+            </div>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 tracking-tight leading-tight animate-fade-in-up" style="animation-delay: 0.2s;">
+                Anbarasan <br class="md:hidden">
+                <span class="text-gradient">Henry Uthayachandran</span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-400 mb-10 leading-relaxed animate-fade-in-up" style="animation-delay: 0.3s;">
+                Étudiant en <span class="text-primary font-semibold">3ème année de BUT GEII</span>. <br>
+                Je conçois des systèmes embarqués innovants et performants.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.4s;">
+                <a href="#contact" class="group bg-primary hover:bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50 hover:-translate-y-1">
+                    <i data-lucide="mail" class="w-5 h-5 group-hover:animate-bounce"></i> Me contacter
+                </a>
+                <a href="ANBARASAN_CV.pdf" download="ANBARASAN_CV.pdf" class="group bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-gray-300 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:-translate-y-1 hover:text-white hover:border-primary/50">
+                    <i data-lucide="download" class="w-5 h-5 text-gray-500 group-hover:text-primary transition-colors"></i> CV PDF
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-dark border-y border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase text-sm">
+                        <div class="w-8 h-0.5 bg-primary"></div> À propos
+                    </div>
+                    <h2 class="text-4xl font-bold text-white leading-tight">
+                        Passionné par l'électronique et le <span class="text-gradient">monde de l'embarqué</span>.
+                    </h2>
+                    <div class="space-y-6 text-gray-400 text-lg leading-relaxed">
+                        <p>
+                            Étudiant rigoureux et curieux, je me spécialise dans l'électronique et l'informatique industrielle. Mon parcours académique à l'IUT de Créteil m'a permis de développer des compétences solides en <strong>conception de cartes (PCB)</strong>, programmation (C/C++, Python) et maintenance système.
+                        </p>
+                        <p>
+                            J'ai également un fort intérêt pour l'aéronautique, concrétisé par l'obtention de mon <strong>BIA</strong>. Je souhaite aujourd'hui mettre mes compétences techniques au service d'une entreprise innovante et participer à des projets ambitieux.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <span class="px-4 py-2 bg-zinc-900 rounded-full text-sm font-medium border border-zinc-700 text-gray-300 shadow-sm flex items-center gap-2">
+                            <i data-lucide="languages" class="w-4 h-4 text-primary"></i> Anglais B1+ (Technique)
+                        </span>
+                        <span class="px-4 py-2 bg-zinc-900 rounded-full text-sm font-medium border border-zinc-700 text-gray-300 shadow-sm flex items-center gap-2">
+                            <i data-lucide="languages" class="w-4 h-4 text-primary"></i> Allemand B2
+                        </span>
+                        <span class="px-4 py-2 bg-zinc-900 rounded-full text-sm font-medium border border-zinc-700 text-gray-300 shadow-sm flex items-center gap-2">
+                            <i data-lucide="car" class="w-4 h-4 text-primary"></i> Permis B
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Card Stats/Info -->
+                <div class="grid grid-cols-2 gap-5">
+                    <div class="bg-card p-6 rounded-2xl border border-zinc-800 shadow-lg hover:border-primary/30 transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-blue-900/30 rounded-xl flex items-center justify-center text-primary mb-4"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                        <h3 class="font-bold text-white text-lg">Électronique</h3>
+                        <p class="text-sm text-gray-400 mt-2">Conception systèmes, PCB & Schémas</p>
+                    </div>
+                    <div class="bg-card p-6 rounded-2xl border border-zinc-800 shadow-lg hover:border-accent/30 transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-green-900/30 rounded-xl flex items-center justify-center text-accent mb-4"><i data-lucide="cpu" class="w-6 h-6"></i></div>
+                        <h3 class="font-bold text-white text-lg">Embarqué</h3>
+                        <p class="text-sm text-gray-400 mt-2">STM32, Microcontrôleurs, IOT</p>
+                    </div>
+                    <div class="bg-card p-6 rounded-2xl border border-zinc-800 shadow-lg hover:border-purple-500/30 transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-500 mb-4"><i data-lucide="code" class="w-6 h-6"></i></div>
+                        <h3 class="font-bold text-white text-lg">Programmation</h3>
+                        <p class="text-sm text-gray-400 mt-2">C, C++, Python, VHDL</p>
+                    </div>
+                    <div class="bg-card p-6 rounded-2xl border border-zinc-800 shadow-lg hover:border-orange-500/30 transition duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-orange-900/30 rounded-xl flex items-center justify-center text-orange-500 mb-4"><i data-lucide="wrench" class="w-6 h-6"></i></div>
+                        <h3 class="font-bold text-white text-lg">Outils</h3>
+                        <p class="text-sm text-gray-400 mt-2">KiCad, SolidWorks, Vivado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Details -->
+    <section id="competences" class="py-24 bg-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Compétences Techniques</h2>
+                <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="space-y-12">
+                <!-- Logiciels -->
+                <div class="bg-zinc-900/50 p-8 md:p-10 rounded-3xl border border-zinc-800 shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-8 flex items-center gap-4">
+                        <div class="p-3 bg-zinc-800 rounded-xl text-gray-400 shadow-sm border border-zinc-700"><i data-lucide="monitor" class="w-6 h-6"></i></div>
+                        Logiciels & IDE
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- KiCad - Orange -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-kicad">
+                            <div class="p-2 bg-orange-900/20 rounded-lg text-orange-500 group-hover:bg-orange-900/40 transition-colors"><i data-lucide="circuit-board" class="w-6 h-6"></i></div> 
+                            <span class="text-lg font-bold text-orange-400 hover:text-orange-300">KiCad</span>
+                        </button>
+                        
+                        <!-- STM32 - Bleu -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-stm32">
+                            <div class="p-2 bg-blue-900/20 rounded-lg text-blue-500 group-hover:bg-blue-900/40 transition-colors"><i data-lucide="cpu" class="w-6 h-6"></i></div> 
+                            <span class="text-lg font-bold text-blue-400 hover:text-blue-300">STM32 CubeIDE</span>
+                        </button>
+                        
+                        <!-- LTspice - Rouge -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-red-500 hover:shadow-lg hover:shadow-red-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-ltspice">
+                            <div class="p-2 bg-red-900/20 rounded-lg text-red-500 group-hover:bg-red-900/40 transition-colors"><i data-lucide="activity" class="w-6 h-6"></i></div> 
+                            <span class="text-lg font-bold text-red-400 hover:text-red-300">LTspice</span>
+                        </button>
+                        
+                        <!-- Vivado - Violet -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-vivado">
+                            <div class="p-2 bg-purple-900/20 rounded-lg text-purple-500 group-hover:bg-purple-900/40 transition-colors"><i data-lucide="microchip" class="w-6 h-6"></i></div> 
+                            <span class="text-lg font-bold text-purple-400 hover:text-purple-300">Vivado</span>
+                        </button>
+                        
+                        <!-- SolidWorks - Rose/Rouge -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-solidworks">
+                             <div class="p-2 bg-pink-900/20 rounded-lg text-pink-500 group-hover:bg-pink-900/40 transition-colors"><i data-lucide="box" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-pink-400 hover:text-pink-300">SolidWorks</span>
+                        </button>
+
+                        <!-- Code::Blocks - Jaune/Vert -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-codeblocks">
+                             <div class="p-2 bg-yellow-900/20 rounded-lg text-yellow-500 group-hover:bg-yellow-900/40 transition-colors"><i data-lucide="terminal-square" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-yellow-400 hover:text-yellow-300">Code::Blocks</span>
+                        </button>
+
+                        <!-- VS Code - Bleu Ciel -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-sky-500 hover:shadow-lg hover:shadow-sky-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-vscode">
+                             <div class="p-2 bg-sky-900/20 rounded-lg text-sky-500 group-hover:bg-sky-900/40 transition-colors"><i data-lucide="code-2" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-sky-400 hover:text-sky-300">VS Code</span>
+                        </button>
+
+                        <!-- Gantt Project - Indigo -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-gantt">
+                             <div class="p-2 bg-indigo-900/20 rounded-lg text-indigo-500 group-hover:bg-indigo-900/40 transition-colors"><i data-lucide="calendar-clock" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-indigo-400 hover:text-indigo-300">Gantt Project</span>
+                        </button>
+
+                        <!-- FST 4 - Vert -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-green-500 hover:shadow-lg hover:shadow-green-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-fst4">
+                             <div class="p-2 bg-green-900/20 rounded-lg text-green-500 group-hover:bg-green-900/40 transition-colors"><i data-lucide="wrench" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-green-400 hover:text-green-300">FST 4</span>
+                        </button>
+
+                         <!-- Pack Office - Orange -->
+                         <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-orange-600 hover:shadow-lg hover:shadow-orange-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-office">
+                             <div class="p-2 bg-orange-900/20 rounded-lg text-orange-500 group-hover:bg-orange-900/40 transition-colors"><i data-lucide="file-spreadsheet" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-orange-500 hover:text-orange-400">Pack Office</span>
+                        </button>
+
+                         <!-- Adobe - Rouge -->
+                         <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-rose-600 hover:shadow-lg hover:shadow-rose-900/20 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-soft-adobe">
+                             <div class="p-2 bg-rose-900/20 rounded-lg text-rose-500 group-hover:bg-rose-900/40 transition-colors"><i data-lucide="pen-tool" class="w-6 h-6"></i></div> 
+                             <span class="text-lg font-bold text-rose-500 hover:text-rose-400">Adobe CC</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Langages (Grille identique pour cohérence) -->
+                <div class="bg-zinc-900/50 p-8 rounded-3xl border border-zinc-800 shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-8 flex items-center gap-4">
+                        <div class="p-3 bg-zinc-800 rounded-xl text-gray-400 shadow-sm border border-zinc-700"><i data-lucide="terminal" class="w-6 h-6"></i></div>
+                        Langages de Programmation
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- C / C++ -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-blue-500 hover:shadow-xl hover:shadow-blue-900/30 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-c">
+                            <div class="p-2 bg-blue-900/20 rounded-lg text-blue-500 group-hover:bg-blue-900/40 transition-colors"><i data-lucide="code" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-blue-400 hover:text-blue-300">C / C++</span>
+                        </button>
+                        
+                        <!-- Python -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-yellow-500 hover:shadow-xl hover:shadow-yellow-900/30 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-python">
+                            <div class="p-2 bg-yellow-900/20 rounded-lg text-yellow-500 group-hover:bg-yellow-900/40 transition-colors"><i data-lucide="file-code" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-yellow-400 hover:text-yellow-300">Python</span>
+                        </button>
+                        
+                        <!-- VHDL -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-purple-500 hover:shadow-xl hover:shadow-purple-900/30 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-vhdl">
+                            <div class="p-2 bg-purple-900/20 rounded-lg text-purple-500 group-hover:bg-purple-900/40 transition-colors"><i data-lucide="cpu" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-purple-400 hover:text-purple-300">VHDL</span>
+                        </button>
+                        
+                        <!-- Grafcet -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-gray-500 hover:shadow-xl hover:shadow-gray-800/50 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-grafcet">
+                            <div class="p-2 bg-gray-800 rounded-lg text-gray-500 group-hover:bg-gray-700 transition-colors"><i data-lucide="git-branch" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-gray-300 hover:text-gray-200">Grafcet</span>
+                        </button>
+                        
+                        <!-- VBA -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-green-500 hover:shadow-xl hover:shadow-green-900/30 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-vba">
+                            <div class="p-2 bg-green-900/20 rounded-lg text-green-500 group-hover:bg-green-900/40 transition-colors"><i data-lucide="sheet" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-green-500 hover:text-green-400">VBA</span>
+                        </button>
+                        
+                        <!-- HTML/CSS -->
+                        <button class="modal-trigger group p-4 bg-zinc-800 rounded-2xl border-2 border-zinc-700 hover:border-orange-500 hover:shadow-xl hover:shadow-orange-900/30 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-full" data-modal="modal-lang-html">
+                            <div class="p-2 bg-orange-900/20 rounded-lg text-orange-500 group-hover:bg-orange-900/40 transition-colors"><i data-lucide="layout" class="w-6 h-6"></i></div> 
+                            <span class="text-xl font-bold text-orange-400 hover:text-orange-300">HTML</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projets" class="py-24 bg-dark border-t border-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Projets Réalisés</h2>
+                <div class="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+            </div>
+            <!-- Contenu Projets conservé tel quel -->
+            <div class="mb-20">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="h-px flex-1 bg-zinc-800"></div><h3 class="text-xl font-bold text-primary px-6 py-2 bg-zinc-900 rounded-full border border-blue-900/30 shadow-sm">Projets 3ème Année (BUT 3)</h3><div class="h-px flex-1 bg-zinc-800"></div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                     <!-- Balise Infrarouge -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-red-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="signal" class="w-20 h-20 text-red-500/50 group-hover:text-red-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-8 flex-grow flex flex-col"><h3 class="text-2xl font-bold text-white group-hover:text-red-400 transition-colors mb-3">Système de Détection de Balise</h3><p class="text-gray-400 text-sm mb-6">Détection optique de balises lumineuses.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">Infrarouge</span><span class="tech-badge">Analogique</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-red-600 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-balise">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-20">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="h-px flex-1 bg-zinc-800"></div><h3 class="text-xl font-bold text-accent px-6 py-2 bg-zinc-900 rounded-full border border-green-900/30 shadow-sm">Projets 2ème Année (BUT 2)</h3><div class="h-px flex-1 bg-zinc-800"></div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    <!-- Maintenance -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-green-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors">
+                            <i data-lucide="wrench" class="w-20 h-20 text-green-500/50 group-hover:text-green-400 group-hover:scale-110 transition-all duration-500"></i>
+                        </div>
+                        <div class="p-8 flex-grow flex flex-col">
+                            <h3 class="text-2xl font-bold text-white group-hover:text-green-400 transition-colors mb-3">Maintenance Système Festo</h3>
+                            <p class="text-gray-400 text-sm mb-6">Maintenance corrective sur ligne de production.</p>
+                            <div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">FST 4</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-green-600 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-maintenance">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div>
+                        </div>
+                    </div>
+                    <!-- Supervision -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-indigo-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="monitor-check" class="w-20 h-20 text-indigo-500/50 group-hover:text-indigo-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-8 flex-grow flex flex-col"><h3 class="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3">Supervision Industrielle</h3><p class="text-gray-400 text-sm mb-6">Interface de supervision Excel/VBA.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">VBA</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-indigo-600 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-supervision">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                    <!-- Oscillo -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-blue-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="activity" class="w-20 h-20 text-blue-500/50 group-hover:text-blue-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-8 flex-grow flex flex-col"><h3 class="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors mb-3">Oscilloscope Numérique</h3><p class="text-gray-400 text-sm mb-6">Conception complète d'un oscilloscope.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">STM32</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-blue-600 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-oscillo">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                    <!-- Météo -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-sky-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="cloud-rain" class="w-20 h-20 text-sky-500/50 group-hover:text-sky-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-8 flex-grow flex flex-col"><h3 class="text-2xl font-bold text-white group-hover:text-sky-400 transition-colors mb-3">Station Météo</h3><p class="text-gray-400 text-sm mb-6">Système IoT LoRaWAN.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">LoRa</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-sky-600 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-meteo">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                </div>
+            </div>
+             <!-- Projets 1ère Année -->
+            <div>
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="h-px flex-1 bg-zinc-800"></div><h3 class="text-xl font-bold text-accent px-6 py-2 bg-zinc-900 rounded-full border border-green-900/30 shadow-sm">Projets 1ère Année (BUT 1)</h3><div class="h-px flex-1 bg-zinc-800"></div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+                     <!-- Générateur -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-yellow-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="zap" class="w-20 h-20 text-yellow-500/50 group-hover:text-yellow-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-6 flex-grow flex flex-col"><h3 class="text-xl font-bold text-white group-hover:text-yellow-400 transition-colors mb-3">Générateur de Signal</h3><p class="text-gray-400 text-sm mb-4">Génération de signal triangulaire.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">Logique</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-yellow-500 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-generateur">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                     <!-- Ampli -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-red-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                         <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="sliders" class="w-20 h-20 text-red-500/50 group-hover:text-red-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-6 flex-grow flex flex-col"><h3 class="text-xl font-bold text-white group-hover:text-red-400 transition-colors mb-3">Amplificateur</h3><p class="text-gray-400 text-sm mb-4">Traitement de signal analogique.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">Analogique</span></div> <button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-red-500 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-ampli">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                    <!-- Robot -->
+                    <div class="group bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-lg hover:shadow-xl hover:border-purple-500/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full md:col-span-2 lg:col-span-1 lg:col-start-1 lg:col-end-3 mx-auto w-full max-w-2xl">
+                        <div class="h-48 bg-zinc-800 flex items-center justify-center relative overflow-hidden group-hover:bg-zinc-800/80 transition-colors"><i data-lucide="bot" class="w-20 h-20 text-purple-500/50 group-hover:text-purple-400 group-hover:scale-110 transition-all duration-500"></i></div>
+                        <div class="p-6 flex-grow flex flex-col"><h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition-colors mb-3">Robot Autonome</h3><p class="text-gray-400 text-sm mb-4">Système autonome avec gestion d'énergie.</p><div class="mt-auto flex items-center justify-between"><div class="flex gap-2"><span class="tech-badge">Arduino</span></div><button class="modal-trigger py-2 px-4 bg-zinc-800 text-gray-300 hover:bg-purple-500 hover:text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2" data-modal="modal-robot">Détails <i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline/Parcours -->
+    <section id="parcours" class="py-24 bg-black border-t border-zinc-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title">Parcours Professionnel & Académique</h2>
+            
+            <!-- Main Timeline Container -->
+            <div class="relative space-y-12">
+                <!-- Vertical Line -->
+                <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-zinc-800 ml-2.5"></div>
+    
+                <!-- Section: Expériences -->
+                <div class="relative">
+                    <h3 class="text-2xl font-bold text-white mb-8 ml-10 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-900/30 flex items-center justify-center text-primary shadow-sm">
+                            <i data-lucide="briefcase" class="w-4 h-4"></i>
+                        </div>
+                        Expériences Professionnelles
+                    </h3>
+                    
+                    <!-- Item 1: Agent -->
+                    <div class="relative ml-10 mb-10 group">
+                        <!-- Dot -->
+                        <div class="absolute -left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-black bg-blue-500 z-10"></div>
+                        
+                        <!-- Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                            <h4 class="text-xl font-bold text-white hover:text-blue-400 transition flex items-center gap-2">
+                                Agent d'Exploitation 
+                            </h4>
+                            <span class="text-sm font-mono bg-blue-900/30 text-blue-300 border border-blue-800 px-2 py-1 rounded">Juillet - Aout 2025</span>
+                        </div>
+                        <div class="text-gray-400 mb-3">Aéroport de Paris</div>
+    
+                        <!-- Content Box -->
+                        <div class="bg-zinc-900 p-5 rounded-r-xl border-l-4 border-blue-500 text-gray-300 text-sm leading-relaxed shadow-md">
+                            <ul class="list-disc list-inside space-y-1.5">
+                                <li><strong class="text-white">Trier et acheminer les bagages :</strong> Organisation logistique efficace pour assurer le départ des vols à l'heure.</li>
+                                <li><strong class="text-white">Vérifier et retirer les bagages suspects :</strong> Application stricte des protocoles de sûreté aéroportuaire pour la sécurité des passagers.</li>
+                                <li>Travail en équipe dans un environnement sous contrainte temporelle forte.</li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <!-- Item 2: Technicien -->
+                    <div class="relative ml-10 mb-10 group">
+                        <!-- Dot -->
+                        <div class="absolute -left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-black bg-blue-500 z-10"></div>
+                        
+                        <!-- Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                            <h4 class="text-xl font-bold text-white hover:text-blue-400 transition flex items-center gap-2">
+                                Technicien Réparateur (Stage)
+                            </h4>
+                            <span class="text-sm font-mono bg-blue-900/30 text-blue-300 border border-blue-800 px-2 py-1 rounded">Avril - Juil 2025</span>
+                        </div>
+                        <div class="text-gray-400 mb-3">Gold GSM Paris</div>
+    
+                        <!-- Content Box -->
+                        <div class="bg-zinc-900 p-5 rounded-r-xl border-l-4 border-blue-500 text-gray-300 text-sm leading-relaxed shadow-md">
+                            <div class="space-y-2">
+                                <p><strong class="text-white">Réparation de smartphones (iPhone & Android) :</strong></p>
+                                <ul class="list-disc list-inside ml-2 text-xs">
+                                    <li>Remplacement d'écrans, batteries, ports de charge et vitres arrière.</li>
+                                    <li>Diagnostic de pannes matérielles et logicielles.</li>
+                                </ul>
+                                <p><strong class="text-white">Outils maîtrisés :</strong> Station à air chaud, fer à souder, microscope, nettoyeur ultrasonique, alimentation régulée.</p>
+                                <p><strong class="text-white">Gestion & Service :</strong></p>
+                                <ul class="list-disc list-inside ml-2 text-xs">
+                                    <li>Vente d'accessoires téléphoniques et informatiques.</li>
+                                    <li>Services financiers : Création de comptes Orange Money, transferts RIA.</li>
+                                    <li>Gestion des stocks et commandes fournisseurs.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Section: Formations -->
+                <div class="relative">
+                     <h3 class="text-2xl font-bold text-white mb-8 ml-10 flex items-center gap-3">
+                        <i data-lucide="graduation-cap" class="text-accent w-6 h-6"></i> Formations
+                    </h3>
+    
+                    <!-- Item 3: BUT GEII (Active/Green) -->
+                    <div class="relative ml-10 mb-10 group">
+                        <!-- Dot (Green) -->
+                        <div class="absolute -left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-black bg-accent z-10"></div>
+                         <!-- Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                            <h4 class="text-xl font-bold text-white hover:text-accent transition flex items-center gap-2">
+                                BUT GEII (En cours)
+                            </h4>
+                            <span class="text-sm font-mono bg-green-900/30 text-green-300 border border-green-800 px-2 py-1 rounded">2023 - 2026</span>
+                        </div>
+                        <div class="text-gray-400 mb-3">IUT Créteil-Vitry (UPEC)</div>
+                        
+                        <!-- Content Box (Green Border) -->
+                        <div class="bg-zinc-900 p-5 rounded-r-xl border-l-4 border-accent text-gray-300 text-sm leading-relaxed shadow-md">
+                             <p class="mb-2 text-white font-semibold">Actuellement en 3ème année de BUT GEII</p>
+                             <div class="space-y-3">
+                                <div>
+                                    <strong class="text-blue-400 block mb-1">1ère Année :</strong>
+                                    <ul class="list-disc list-inside ml-2 text-xs text-gray-400">
+                                        <li>Bases de l'électricité, électronique analogique et numérique.</li>
+                                        <li>Programmation en C, architectures des microcontrôleurs.</li>
+                                        <li>Projet : Robot suiveur de ligne / éviteur d'obstacles.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="text-blue-400 block mb-1">2ème Année :</strong>
+                                    <ul class="list-disc list-inside ml-2 text-xs text-gray-400">
+                                        <li>Électronique de puissance, conversion d'énergie.</li>
+                                        <li>Automatisme industriel (Grafcet, API).</li>
+                                        <li>Projet : Système de tri automatisé (Festo) et Supervision.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="text-blue-400 block mb-1">3ème Année (En cours) :</strong>
+                                    <ul class="list-disc list-inside ml-2 text-xs text-gray-400">
+                                        <li>Spécialisation Électronique et Systèmes Embarqués.</li>
+                                        <li>Projets avancés en cours de développement.</li>
+                                    </ul>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+    
+                    <!-- Item 4: BIA (Grey) -->
+                    <div class="relative ml-10 mb-10 group">
+                        <!-- Dot (Grey) -->
+                        <div class="absolute -left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-black bg-gray-500 z-10"></div>
+                         <!-- Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                            <h4 class="text-xl font-bold text-white hover:text-gray-400 transition flex items-center gap-2">
+                                BIA
+                            </h4>
+                            <span class="text-sm font-mono bg-zinc-800 text-gray-400 border border-zinc-700 px-2 py-1 rounded">2023 - 2024</span>
+                        </div>
+                        <div class="text-gray-400 mb-3">IUT Créteil</div>
+                        
+                        <!-- Content Box (Grey Border) -->
+                        <div class="bg-zinc-900 p-5 rounded-r-xl border-l-4 border-gray-500 text-gray-300 text-sm leading-relaxed shadow-md">
+                             <p class="mb-1">Brevet d'Initiation Aéronautique :</p>
+                             <ul class="list-disc list-inside ml-2 text-xs text-gray-400">
+                                 <li>Mécanique du vol, Aérodynamique, Météorologie.</li>
+                                 <li>Étude des aéronefs et engins spatiaux.</li>
+                                 <li>Météorologie et Navigation aérienne.</li>
+                                 <li>Histoire de l'aéronautique et de l'espace.</li>
+                             </ul>
+                        </div>
+                    </div>
+
+                    <!-- Item 5: Bac (Grey) -->
+                    <div class="relative ml-10 mb-10 group">
+                        <!-- Dot (Grey) -->
+                        <div class="absolute -left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-black bg-gray-500 z-10"></div>
+                         <!-- Header -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-1">
+                            <h4 class="text-xl font-bold text-white hover:text-gray-400 transition flex items-center gap-2">
+                                Baccalauréat Général
+                            </h4>
+                            <span class="text-sm font-mono bg-zinc-800 text-gray-400 border border-zinc-700 px-2 py-1 rounded">2020 - 2023</span>
+                        </div>
+                        <div class="text-gray-400 mb-3">Lycée Voillaume</div>
+                        
+                        <!-- Content Box (Grey Border) -->
+                        <div class="bg-zinc-900 p-5 rounded-r-xl border-l-4 border-gray-500 text-gray-300 text-sm leading-relaxed shadow-md">
+                             <p>Spécialités : SI (Sciences de l'Ingénieur) et NSI (Numérique).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact" class="py-24 bg-dark border-t border-zinc-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">Me Contacter</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <a href="mailto:henryanbarasan3@gmail.com" class="group p-6 bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-primary/50 transition-all"><div class="w-12 h-12 bg-blue-900/20 rounded-full flex items-center justify-center text-primary mx-auto mb-4"><i data-lucide="mail" class="w-6 h-6"></i></div><span class="text-sm font-semibold text-gray-300 group-hover:text-white">Email</span></a>
+                <a href="https://www.linkedin.com/in/anbarasan-henry-uthayachandran-4b6884326" target="_blank" class="group p-6 bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-blue-500/50 transition-all"><div class="w-12 h-12 bg-blue-900/20 rounded-full flex items-center justify-center text-blue-500 mx-auto mb-4"><i data-lucide="linkedin" class="w-6 h-6"></i></div><span class="text-sm font-semibold text-gray-300 group-hover:text-white">LinkedIn</span></a>
+                <a href="tel:+33635468719" class="group p-6 bg-zinc-900 rounded-2xl border border-zinc-800 hover:border-accent/50 transition-all"><div class="w-12 h-12 bg-green-900/20 rounded-full flex items-center justify-center text-accent mx-auto mb-4"><i data-lucide="phone" class="w-6 h-6"></i></div><span class="text-sm font-semibold text-gray-300 group-hover:text-white">06 35 46 87 19</span></a>
+                 <div class="p-6 bg-zinc-900 rounded-2xl border border-zinc-800"><div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-gray-400 mx-auto mb-4"><i data-lucide="map-pin" class="w-6 h-6"></i></div><span class="text-sm font-semibold text-gray-300">Aulnay-Sous-Bois</span></div>
+            </div>
+            <p class="text-gray-500 text-sm mt-16">© 2025 Anbarasan Henry Uthayachandran.</p>
+        </div>
+    </section>
+
+    <!-- MODALES -->
+    
+    <!-- Modal Balise (Nouveau Projet 3ème année) -->
+    <div id="modal-balise" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Système de Détection de Balise Infrarouge</h2>
+            <p class="text-red-400 text-sm font-mono mb-6 bg-red-900/20 inline-block px-2 py-1 rounded border border-red-900/30">SAé 5.02 - Conception Système Embarqué</p>
+            <div class="space-y-8">
+                <div>
+                     <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5 text-primary"></i> Objectif & Fonctionnement</h3>
+                     <p class="text-sm text-gray-300 text-justify mb-4">Conception d'un système complet de détection de balises lumineuses infrarouges modulées à 10kHz pour le guidage d'un robot.</p>
+                     <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-black/30 p-4 rounded-xl border border-zinc-800">
+                             <h4 class="font-bold text-white mb-2 text-sm text-red-400">Émetteur IR</h4>
+                             <ul class="list-disc list-inside text-xs text-gray-400 space-y-1">
+                                 <li>Oscillateur <strong>NE555</strong> astable (10 kHz).</li>
+                                 <li>Amplification courant par transistor <strong>PNP (2N2907)</strong>.</li>
+                                 <li>LEDs Infrarouges de puissance.</li>
+                             </ul>
+                        </div>
+                        <div class="bg-black/30 p-4 rounded-xl border border-zinc-800">
+                             <h4 class="font-bold text-white mb-2 text-sm text-green-400">Récepteur IR</h4>
+                             <ul class="list-disc list-inside text-xs text-gray-400 space-y-1">
+                                 <li>Photodiode <strong>BPW34</strong>.</li>
+                                 <li>Amplificateur <strong>Transimpédance</strong> (Courant -> Tension).</li>
+                                 <li>Filtrage et détection de seuil.</li>
+                             </ul>
+                        </div>
+                     </div>
+                </div>
+                <div>
+                     <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-purple-400"></i> Schémas & Réalisation</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Émetteur</p>
+                             <img src="montage emmeteur.jpg" alt="Schéma Émetteur IR" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : montage emmeteur.jpg</div>';">
+                        </div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Récepteur</p>
+                             <img src="montage recepteur.jpg" alt="Schéma Récepteur IR" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : montage recepteur.jpg</div>';">
+                        </div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Montage PNP</p>
+                             <img src="PNP.jpg" alt="Schéma Montage PNP" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : PNP.jpg</div>';">
+                        </div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Montage Horloge NE555</p>
+                             <img src="montageproto.jpg" alt="Schéma Montage Horloge NE555" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : montageproto.jpg</div>';">
+                        </div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Montage Horloge NE555</p>
+                             <img src="montageproto.jpg" alt="Schéma Montage Horloge NE555" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : montageproto.jpg</div>';">
+                        </div>
+                         <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Signal Horloge Original</p>
+                             <img src="signalhorloge.jpg" alt="Schéma Montage Horloge NE555" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : signalhorloge.jpg</div>';">
+                        </div>
+                         <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Signal Horloge Inversé</p>
+                             <img src="Signalinversé.jpg" alt="Schéma Montage Horloge NE555" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : Signalinversé.jpg</div>';">
+                        </div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800">
+                             <p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma Montage final</p>
+                             <img src="montage Final.jpg" alt="Schéma Montage Horloge NE555" class="w-full h-auto object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image non chargée : montage Final.jpg</div>';">
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- KiCad -->
+    <div id="modal-soft-kicad" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="circuit-board" class="text-orange-400"></i> KiCad</h2>
+            <p class="text-gray-400 text-sm mb-4">Conception de circuits imprimés (PCB) et schématique. Outil central pour la réalisation physique des projets.</p>
+            <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Saisie de schémas électroniques complexes.</li>
+                    <li>Routage de PCB (Simple & Double couche).</li>
+                    <li>Création de bibliothèques de composants.</li>
+                    <li>Génération de fichiers de fabrication (Gerber).</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projets associés :</h4>
+                <div class="flex flex-wrap gap-2">
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-orange-900/30 text-orange-400 text-xs rounded-full border border-orange-900/30 transition" onclick="switchModal('modal-soft-kicad', 'modal-robot')">Robot Mobile</button>
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-blue-900/30 text-blue-400 text-xs rounded-full border border-blue-900/30 transition" onclick="switchModal('modal-soft-kicad', 'modal-oscillo')">Oscilloscope</button>
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-sky-900/30 text-sky-400 text-xs rounded-full border border-sky-900/30 transition" onclick="switchModal('modal-soft-kicad', 'modal-meteo')">Station Météo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STM32 -->
+    <div id="modal-soft-stm32" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="cpu" class="text-blue-400"></i> STM32 CubeIDE</h2>
+            <p class="text-gray-400 text-sm mb-4">Développement C/C++ pour systèmes embarqués.</p>
+            <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Configuration des périphériques (ADC, UART, I2C, TIM).</li>
+                    <li>Gestion des interruptions (NVIC) et du DMA.</li>
+                    <li>Débogage temps réel.</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projets associés :</h4>
+                <div class="flex flex-wrap gap-2">
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-sky-900/30 text-sky-400 text-xs rounded-full border border-sky-900/30 transition" onclick="switchModal('modal-soft-stm32', 'modal-meteo')">Station Météo</button>
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-blue-900/30 text-blue-400 text-xs rounded-full border border-blue-900/30 transition" onclick="switchModal('modal-soft-stm32', 'modal-oscillo')">Oscilloscope</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LTspice -->
+    <div id="modal-soft-ltspice" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="activity" class="text-red-400"></i> LTspice</h2>
+            <p class="text-gray-400 text-sm mb-4">Simulation de circuits analogiques.</p>
+            <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Analyse temporelle (Transient) et fréquentielle (AC).</li>
+                    <li>Validation de montages AOP (Filtres, Amplis).</li>
+                    <li>Dimensionnement des composants.</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-red-900/30 text-red-400 text-xs rounded-full border border-red-900/30 transition" onclick="switchModal('modal-soft-ltspice', 'modal-ampli')">Amplificateur</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vivado -->
+    <div id="modal-soft-vivado" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="microchip" class="text-purple-400"></i> Vivado</h2>
+            <p class="text-gray-400 text-sm mb-4">Conception numérique pour FPGA Xilinx.</p>
+            <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Développement en VHDL.</li>
+                    <li>Synthèse et implémentation sur cible FPGA.</li>
+                    <li>Simulation comportementale.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Lien :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-purple-900/30 text-purple-400 text-xs rounded-full border border-purple-900/30 transition" onclick="switchModal('modal-soft-vivado', 'modal-lang-vhdl')">Langage VHDL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SolidWorks -->
+    <div id="modal-soft-solidworks" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="box" class="text-pink-400"></i> SolidWorks</h2>
+            <p class="text-gray-400 text-sm mb-4">CAO Mécanique 3D.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Modélisation de pièces (Châssis, Supports).</li>
+                    <li>Assemblage de systèmes.</li>
+                    <li>Mise en plan.</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-purple-900/30 text-purple-400 text-xs rounded-full border border-purple-900/30 transition" onclick="switchModal('modal-soft-solidworks', 'modal-robot')">Robot Mobile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CodeBlocks -->
+    <div id="modal-soft-codeblocks" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="terminal-square" class="text-yellow-400"></i> Code::Blocks</h2>
+            <p class="text-gray-400 text-sm mb-4">IDE léger pour C/C++.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Usage :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Apprentissage de l'algorithmique.</li>
+                    <li>Gestion des pointeurs et de la mémoire.</li>
+                    <li>Programmation structurée.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Lien :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-blue-900/30 text-blue-400 text-xs rounded-full border border-blue-900/30 transition" onclick="switchModal('modal-soft-codeblocks', 'modal-lang-c')">Langage C/C++</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VS Code -->
+    <div id="modal-soft-vscode" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="code-2" class="text-sky-400"></i> VS Code</h2>
+            <p class="text-gray-400 text-sm mb-4">Éditeur de code polyvalent.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Usage :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Développement Web (HTML/CSS).</li>
+                    <li>Scripts Python.</li>
+                    <li>Versionning avec Git.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Lien :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-orange-900/30 text-orange-400 text-xs rounded-full border border-orange-900/30 transition" onclick="switchModal('modal-soft-vscode', 'modal-lang-html')">Portfolio Web</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FST 4 -->
+    <div id="modal-soft-fst4" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="wrench" class="text-green-400"></i> FST 4</h2>
+            <p class="text-gray-400 text-sm mb-4">Logiciel pour automates Festo.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Programmation en Grafcet.</li>
+                    <li>Forçage des Entrées/Sorties.</li>
+                    <li>Diagnostic de pannes en ligne.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-green-900/30 text-green-400 text-xs rounded-full border border-green-900/30 transition" onclick="switchModal('modal-soft-fst4', 'modal-maintenance')">Maintenance Festo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Office -->
+    <div id="modal-soft-office" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="file-spreadsheet" class="text-orange-500"></i> Pack Office</h2>
+            <p class="text-gray-400 text-sm mb-4">Outils bureautiques avancés.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Usage :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li><strong>Excel/VBA :</strong> Supervision industrielle.</li>
+                    <li><strong>Word :</strong> Rapports techniques.</li>
+                    <li><strong>PowerPoint :</strong> Soutenances de projets.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-indigo-900/30 text-indigo-400 text-xs rounded-full border border-indigo-900/30 transition" onclick="switchModal('modal-soft-office', 'modal-supervision')">Supervision (Excel)</button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Adobe -->
+    <div id="modal-soft-adobe" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="pen-tool" class="text-rose-500"></i> Adobe CC</h2>
+            <p class="text-gray-400 text-sm mb-4">Création graphique et multimédia.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Usage :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Retouche photos pour rapports (Photoshop).</li>
+                    <li>Création de schémas vectoriels (Illustrator).</li>
+                    <li>Design d'interfaces.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+     <!-- Gantt -->
+    <div id="modal-soft-gantt" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="calendar-clock" class="text-indigo-400"></i> Gantt Project</h2>
+            <p class="text-gray-400 text-sm mb-4">Gestion de projet.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Planification temporelle des SAé.</li>
+                    <li>Gestion des ressources.</li>
+                    <li>Suivi d'avancement.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- C/C++ -->
+    <div id="modal-lang-c" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="code" class="text-blue-400"></i> C / C++</h2>
+            <p class="text-gray-400 text-sm mb-4">Langage bas niveau pour l'embarqué.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Maitrise :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Pointeurs et gestion mémoire.</li>
+                    <li>Structures de données.</li>
+                    <li>Optimisation sur microcontrôleurs.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projets associés :</h4>
+                <div class="flex flex-wrap gap-2">
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-purple-900/30 text-purple-400 text-xs rounded-full border border-purple-900/30 transition" onclick="switchModal('modal-lang-c', 'modal-robot')">Robot</button>
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-sky-900/30 text-sky-400 text-xs rounded-full border border-sky-900/30 transition" onclick="switchModal('modal-lang-c', 'modal-meteo')">Météo</button>
+                     <button class="px-3 py-1 bg-zinc-800 hover:bg-blue-900/30 text-blue-400 text-xs rounded-full border border-blue-900/30 transition" onclick="switchModal('modal-lang-c', 'modal-oscillo')">Oscilloscope</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Python -->
+    <div id="modal-lang-python" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="file-code" class="text-yellow-400"></i> Python</h2>
+            <p class="text-gray-400 text-sm mb-4">Langage de script polyvalent pour l'analyse et l'automatisation.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Utilisation :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Analyse de données (NumPy).</li>
+                    <li>Tracé de courbes (Matplotlib).</li>
+                    <li>Automatisation de tâches.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafcet -->
+    <div id="modal-lang-grafcet" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="git-branch" class="text-gray-300"></i> Grafcet</h2>
+            <p class="text-gray-400 text-sm mb-4">Langage graphique de description des automatismes séquentiels.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Modélisation de systèmes séquentiels.</li>
+                    <li>Étapes, transitions, actions.</li>
+                    <li>Implémentation sur automate.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-green-900/30 text-green-400 text-xs rounded-full border border-green-900/30 transition" onclick="switchModal('modal-lang-grafcet', 'modal-maintenance')">Maintenance Festo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VHDL -->
+    <div id="modal-lang-vhdl" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="cpu" class="text-purple-400"></i> VHDL</h2>
+            <p class="text-gray-400 text-sm mb-4">Description matérielle pour FPGA.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Conception de circuits logiques.</li>
+                    <li>Machines à états.</li>
+                    <li>Simulation avec Vivado.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- VBA -->
+    <div id="modal-lang-vba" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="sheet" class="text-green-500"></i> VBA</h2>
+            <p class="text-gray-400 text-sm mb-4">Visual Basic for Applications pour l'automatisation Excel.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Création de Macros.</li>
+                    <li>Interfaces IHM pour supervision.</li>
+                    <li>Liaison DDE.</li>
+                </ul>
+            </div>
+             <div>
+                <h4 class="text-sm font-bold text-white mb-2">Projet associé :</h4>
+                 <button class="px-3 py-1 bg-zinc-800 hover:bg-indigo-900/30 text-indigo-400 text-xs rounded-full border border-indigo-900/30 transition" onclick="switchModal('modal-lang-vba', 'modal-supervision')">Supervision Industrielle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HTML -->
+    <div id="modal-lang-html" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+         <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-md p-6 relative shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal"><i data-lucide="x"></i></button>
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="layout" class="text-orange-400"></i> HTML/CSS</h2>
+            <p class="text-gray-400 text-sm mb-4">Technologies fondamentales pour le développement web.</p>
+             <div class="bg-zinc-800/50 p-4 rounded-xl border border-zinc-700/50 mb-4">
+                 <h4 class="text-sm font-bold text-white mb-2">Compétences :</h4>
+                <ul class="list-disc list-inside text-gray-400 text-xs space-y-1">
+                    <li>Structure sémantique.</li>
+                    <li>Mise en forme responsive (Tailwind).</li>
+                    <li>Création de portfolio.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Station Météo (Déjà présent, je mets juste à jour pour référence si besoin, sinon le code précédent est bon pour les projets) -->
+    <!-- Je remets les modales projets pour être sûr qu'elles sont là -->
+    <div id="modal-meteo" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Station Météo Connectée (IoT)</h2>
+            <p class="text-blue-400 text-sm font-mono mb-6 bg-blue-900/20 inline-block px-2 py-1 rounded border border-blue-900/30">SAé 4.ESE.01 - Technologies IoT</p>
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="cpu" class="w-5 h-5 text-accent"></i> Architecture Matérielle</h3>
+                    <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 flex justify-center mb-4">
+                        <img src="kicadsaé4.png" alt="Schéma KiCad Station Météo" class="w-full h-auto max-h-80 object-contain rounded" onerror="this.parentElement.innerHTML='<div class=\'p-8 text-center text-gray-500\'>Image Schéma non chargée</div>';">
+                    </div>
+                    <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300">
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Microcontrôleur :</strong> STM32 Nucleo-L432KC (Ultra-low-power).</li>
+                            <li><strong>Communication :</strong> Module Nemeus XM001 (LoRa 868 MHz).</li>
+                            <li><strong>Capteurs :</strong> SHT3x (Température & Humidité).</li>
+                            <li><strong>Alimentation :</strong> Batterie Li-Ion + BMS + Régulateur ADP3338 (3.3V).</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="file-code" class="w-5 h-5 text-primary"></i> Analyse & Code</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-black/30 p-4 rounded-xl border border-zinc-800"><h4 class="font-bold text-white mb-2 text-sm">Analyse Fonctionnelle</h4><ul class="list-disc list-inside text-xs text-gray-400 space-y-1"><li><strong>Utilisateur :</strong> Consulte les données.</li><li><strong>Agit sur :</strong> L'environnement.</li><li><strong>But :</strong> Mesure T° et Humidité.</li></ul></div>
+                        <div class="bg-black/30 p-4 rounded-xl border border-zinc-800"><h4 class="font-bold text-white mb-2 text-sm">Programmation C</h4><ul class="list-disc list-inside text-xs text-gray-400 space-y-1"><li>Modes : Pooling, Interruptions, DMA.</li><li>Protocole : LoRaWAN Classe A.</li><li>Activation : OTAA.</li></ul></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Robot -->
+    <div id="modal-robot" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Robot Mobile Autonome</h2>
+            <p class="text-blue-600 text-sm font-mono mb-6 bg-blue-900/20 inline-block px-2 py-1 rounded border border-blue-900/30">SAé 2.01 - 1ère Année GEII</p>
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-purple-500"></i> Documentation Technique</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800"><p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma KiCad</p><img src="kicadsae2.png" alt="Schéma Robot" class="w-full h-32 object-contain rounded"></div>
+                        <div class="bg-black/50 p-2 rounded-lg border border-zinc-800"><p class="text-center text-xs font-semibold text-gray-500 mb-1">PCB</p><img src="pcbsae2.jpg" alt="PCB Robot" class="w-full h-32 object-contain rounded"></div>
+                    </div>
+                     <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 flex justify-center"><div class="text-center w-full"><p class="text-xs font-semibold text-gray-500 mb-1">Protoboard & Robot Final</p><div class="flex justify-center gap-4"><img src="protosae2.jpg" alt="Proto" class="h-40 object-contain rounded"><img src="photorobot.jpg" alt="Robot Photo" class="h-40 object-contain rounded"></div></div></div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3 flex items-center gap-2"><i data-lucide="cpu" class="w-5 h-5 text-accent"></i> Composants</h3>
+                    <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><ul class="list-disc list-inside space-y-1"><li><strong>Cerveau :</strong> Arduino Uno (ATmega328P).</li><li><strong>Yeux :</strong> 3x Capteurs Ultrasons HC-SR04.</li><li><strong>Muscles :</strong> 2 Moteurs CC + Driver L293D.</li><li><strong>Énergie :</strong> Carte de gestion de batterie maison (Comparateurs LM311).</li></ul></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Autres Modales Projets (Oscillo, Maint, Sup, Gen, Ampli) - Identiques au précédent -->
+    <div id="modal-oscillo" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-3xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Oscilloscope Numérique</h2>
+            <p class="text-blue-400 text-sm font-mono mb-6 bg-blue-900/20 inline-block px-2 py-1 rounded border border-blue-900/30">SAé 3.01</p>
+             <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-black/50 p-2 rounded-lg border border-zinc-800"><p class="text-center text-xs font-semibold text-gray-500 mb-1">Schéma KiCad</p><img src="kicadsae3.jpg" alt="Schéma Oscillo" class="w-full h-auto object-contain rounded"></div>
+                <div class="bg-black/50 p-2 rounded-lg border border-zinc-800"><p class="text-center text-xs font-semibold text-gray-500 mb-1">Montage Réel</p><img src="montagesae3.jpg" alt="Montage Oscillo" class="w-full h-auto object-contain rounded"></div>
+            </div>
+            <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><p class="mb-2"><strong>Fonctionnalités :</strong></p><ul class="list-disc list-inside space-y-1"><li>Acquisition analogique (AOP TLV272).</li><li>Traitement numérique sur STM32 L476RG.</li><li>Couplage AC/DC et protection surtension.</li></ul></div>
+        </div>
+    </div>
+
+    <div id="modal-maintenance" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Maintenance Système Festo</h2>
+            <p class="text-green-400 text-sm font-mono mb-6 bg-green-900/20 inline-block px-2 py-1 rounded border border-green-900/30">SAé 3.02 - Maintenance Corrective</p>
+             <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 mb-6 flex justify-center"><img src="Sans titre.jpg" alt="Festo Station" class="h-48 object-contain rounded"></div>
+            <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><ul class="list-disc list-inside space-y-2"><li>Diagnostic de pannes pneumatiques et électriques.</li><li>Utilisation du logiciel constructeur <strong>FST 4</strong>.</li><li>Méthode de l'arbre de défaillance.</li></ul></div>
+        </div>
+    </div>
+
+    <div id="modal-supervision" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Supervision Industrielle</h2>
+            <p class="text-blue-400 text-sm font-mono mb-6 bg-blue-900/20 inline-block px-2 py-1 rounded border border-blue-900/30">SAé 3.02 - Maintenance Améliorative</p>
+            <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><p class="mb-2">Création d'une IHM complète sous Excel pour piloter la station Festo :</p><ul class="list-disc list-inside space-y-1"><li>Communication automate via protocole <strong>DDE</strong>.</li><li>Interface graphique avec boutons <strong>ActiveX</strong>.</li><li>Scripts <strong>VBA</strong> pour l'automatisation et les alertes.</li></ul></div>
+        </div>
+    </div>
+
+    <div id="modal-generateur" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Générateur de Signal</h2>
+            <p class="text-yellow-400 text-sm font-mono mb-6 bg-yellow-900/20 inline-block px-2 py-1 rounded border border-yellow-900/30">SAé 1.02 - Logique</p>
+             <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 mb-6 flex justify-center"><img src="Capture d’écran 2025-11-28 à 09.43.32.png" alt="Schéma Générateur" class="h-48 object-contain rounded"></div>
+            <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><p>Génération d'un signal triangulaire :</p><ul class="list-disc list-inside mt-2 space-y-1"><li>Horloge : NE555.</li><li>Compteur : CD4040.</li><li>Conversion N/A : Réseau R-2R.</li></ul></div>
+        </div>
+    </div>
+
+    <div id="modal-ampli" class="modal fixed inset-0 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm z-50 p-4">
+        <div class="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-red-500 close-modal p-2 hover:bg-zinc-800 rounded-full transition"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-white mb-2">Amplificateur & Écrêteur</h2>
+            <p class="text-red-400 text-sm font-mono mb-6 bg-red-900/20 inline-block px-2 py-1 rounded border border-red-900/30">SAé 1.01 - Analogique</p>
+             <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 mb-6 flex justify-center"><img src="Capture d’écran 2025-11-28 à 09.25.57.png" alt="Schéma Ampli" class="h-48 object-contain rounded"></div>
+             <div class="bg-black/50 p-2 rounded-lg border border-zinc-800 mb-6 flex justify-center"><img src="lol.png" alt="Schéma LTspice" class="h-48 object-contain rounded"></div>
+            <div class="bg-black/30 p-5 rounded-xl border border-zinc-800 text-sm text-gray-300"><ul class="list-disc list-inside space-y-1"><li>Montage Non-Inverseur (TL081).</li><li>Écrêtage à diodes.</li><li>Simulation LTspice.</li></ul></div>
+        </div>
+    </div>
+
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox fixed inset-0 z-[2000] hidden bg-black/95 flex items-center justify-center p-4 cursor-zoom-out">
+        <img id="lightbox-img" src="" alt="Agrandissement" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-300 scale-95">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white/70 hover:text-white bg-zinc-800/50 rounded-full p-2 transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+
+            // Menu Mobile
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if(btn && menu) {
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+            }
+
+            // Modales Logic
+            const modalTriggers = document.querySelectorAll('.modal-trigger');
+            const closeButtons = document.querySelectorAll('.close-modal');
+            const allModals = document.querySelectorAll('.modal');
+
+            window.openModal = function(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    requestAnimationFrame(() => modal.classList.add('active'));
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    console.error("Erreur : Modale non trouvée avec l'ID : " + modalId);
+                }
+            }
+
+            window.closeModal = function(modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+                document.body.style.overflow = 'auto';
+            }
+
+            // Fonction Switch pour passer d'une modale à l'autre
+            window.switchModal = function(currentId, targetId) {
+                const current = document.getElementById(currentId);
+                if(current) closeModal(current);
+                setTimeout(() => {
+                    openModal(targetId);
+                }, 300); // Attend la fin de l'animation de fermeture
+            }
+
+            modalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = trigger.getAttribute('data-modal');
+                    openModal(targetId);
+                });
+            });
+
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    closeModal(button.closest('.modal'));
+                });
+            });
+
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal);
+                });
+            });
+
+            // Lightbox Logic
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxClose = document.getElementById('lightbox-close');
+            const zoomableImages = document.querySelectorAll('.modal-content img, .modal img');
+
+            function openLightbox(src) {
+                lightboxImg.src = src;
+                lightbox.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    lightbox.classList.add('active');
+                    lightboxImg.classList.remove('scale-95');
+                    lightboxImg.classList.add('scale-100');
+                });
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                lightboxImg.classList.remove('scale-100');
+                lightboxImg.classList.add('scale-95');
+                setTimeout(() => {
+                    lightbox.classList.add('hidden');
+                    lightboxImg.src = '';
+                }, 300);
+            }
+
+            // Délégation d'événement pour gérer les images même dans les modales cachées au départ
+            document.body.addEventListener('click', (e) => {
+                if (e.target.tagName === 'IMG' && e.target.closest('.modal')) {
+                    e.stopPropagation();
+                    openLightbox(e.target.src);
+                }
+            });
+
+            lightbox.addEventListener('click', closeLightbox);
+            lightboxClose.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeLightbox();
+            });
+        });
+    </script>
+</body>
+</html>
